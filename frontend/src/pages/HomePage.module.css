@@ -1,0 +1,44 @@
+/* src/pages/HomePage.module.css */
+.homepage {
+  padding: 20px;
+  text-align: center;
+}
+
+.productList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+input {
+  display: block;
+  margin: 10px auto;
+  padding: 8px;
+  width: 80%;
+  max-width: 400px;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #ddd;
+}
+
+.loading,
+.error {
+  font-size: 1.5em;
+  color: #e74c3c;
+  margin: 20px;
+}
