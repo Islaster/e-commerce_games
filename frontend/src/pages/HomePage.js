@@ -54,12 +54,19 @@ const HomePage = () => {
         const uploadedImageUrl = await uploadImage(imageFile);
         newProduct.imageUrl = uploadedImageUrl;
       }
+      const productData = {
+        name: newProduct.name,
+        price: parseFloat(newProduct.price),
+        description: newProduct.description,
+        imageUrl: newProduct.imageUrl,
+      };
+      console.log('Product data to be sent:', productData);
       if (editMode) {
-        await updateProduct(currentProductId, newProduct);
+        await updateProduct(currentProductId, productData);
         setEditMode(false);
         setCurrentProductId(null);
       } else {
-        await createProduct(newProduct);
+        await createProduct(productData);
       }
       setNewProduct({ name: '', price: '', description: '', imageUrl: '' });
       const products = await getProducts();

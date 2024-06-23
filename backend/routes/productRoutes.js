@@ -5,6 +5,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  createCheckoutSession
 } from '../controllers/productController.js';
 
 const router = express.Router();
@@ -18,4 +19,6 @@ router.route('/:id')
   .put(updateProduct)
   .delete(deleteProduct);
 
+  router.post('/create-checkout-session', createCheckoutSession);
+  
 export default router;

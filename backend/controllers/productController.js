@@ -1,4 +1,9 @@
 import Product from '../models/Product.js';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+console.log('env variables:', process.env.STRIPE_SECRET_KEY);
+
 
 // Get all products
 export const getProducts = async (req, res) => {
@@ -23,8 +28,7 @@ export const getProductById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-// Create a product
+ //create product
 export const createProduct = async (req, res) => {
   const { name, price, description, imageUrl } = req.body;
 
@@ -36,10 +40,50 @@ export const createProduct = async (req, res) => {
   });
 
   try {
+    const stripeProduct = await stripe.products.create({
+      name,
+      description,
+      images: [imageUrl],
+    });
+
+    const stripePrice = await stripe.prices.create({
+      unit_amount: price * 100, // convert to cents
+      currency: 'usd',
+      product: stripeProduct.id,
+    });
+
+    product.stripeProductId = stripeProduct.id;
+    product.stripePriceId = stripePrice.id;
+
     const newProduct = await product.save();
     res.status(201).json(newProduct);
   } catch (error) {
+    console.error('Error creating product:', error);
     res.status(400).json({ message: error.message });
+  }
+};
+
+export const createCheckoutSession = async (req, res) => {
+  const { priceId } = req.body;
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
+        },
+      ],
+      success_url: 'http://localhost:3000/', // Update with your success URL
+      cancel_url: 'http://localhost:3000/cancel', // Update with your cancel URL
+    });
+
+    res.status(200).json({ id: session.id });
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    res.status(500).json({ message: error.message });
   }
 };
 

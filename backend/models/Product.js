@@ -6,6 +6,8 @@ const productSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   description: { type: String, required: true },
   imageUrl: { type: String, required: true },
+  stripeProductId: { type: String },
+  stripePriceId: { type: String }, 
 }, {
   timestamps: true,
 });
