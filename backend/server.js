@@ -19,17 +19,9 @@ app.use(helmet({
   crossOriginResourcePolicy: false,
 }));
 
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
-
 // Enable CORS for the frontend application
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
+  origin: 'https://master--dapper-concha-d7b532.netlify.app'
 }));
 // Middleware to parse JSON bodies
 app.use(express.json());
