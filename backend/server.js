@@ -28,7 +28,7 @@ app.use(express.json());
 
 // Preflight request handling
 app.options('*', cors({
-  origin: allowedOrigins,
+  origin: 'https://master--dapper-concha-d7b532.netlify.app',
   optionsSuccessStatus: 200
 }));
 
