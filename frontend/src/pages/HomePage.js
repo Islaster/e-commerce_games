@@ -15,7 +15,6 @@ const HomePage = () => {
     name: '',
     price: '',
     description: '',
-    imageUrl: '',
   });
   const [editMode, setEditMode] = useState(false);
   const [currentProductId, setCurrentProductId] = useState(null);
@@ -34,7 +33,7 @@ const HomePage = () => {
         setLoading(false);
       }
     };
-    fetchProducts();
+    setTimeout(fetchProducts, 5000);
   }, []);
 
   const handleChange = (e) => {
@@ -60,7 +59,6 @@ const HomePage = () => {
         description: newProduct.description,
         imageUrl: newProduct.imageUrl,
       };
-      console.log('Product data to be sent:', productData);
       if (editMode) {
         await updateProduct(currentProductId, productData);
         setEditMode(false);
@@ -97,7 +95,13 @@ const HomePage = () => {
     }
   };
 
-  if (loading) return <div className={styles.loading}>Loading...</div>;
+  if (loading) return (
+    <div className={styles.loading}>
+      Loading... This may take around 50 seconds. Please be patient. 
+      In the meantime, note that you can create, read, update, and delete (CRUD) products here.
+      To test payments, use Stripe test cards.
+    </div>
+  );
   if (error) return <div className={styles.error}>{error}</div>;
 
   return (
@@ -127,13 +131,6 @@ const HomePage = () => {
           onChange={handleChange}
           placeholder="Product Description"
           required
-        />
-        <input
-          type="text"
-          name="imageUrl"
-          value={newProduct.imageUrl}
-          onChange={handleChange}
-          placeholder="Product Image URL"
         />
         <input type="file" onChange={handleFileChange} />
         <button type="submit">{editMode ? 'Update' : 'Create'} Product</button>
