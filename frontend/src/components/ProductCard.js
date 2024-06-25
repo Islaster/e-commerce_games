@@ -37,7 +37,7 @@ const ProductCard = ({ product, onDelete, onEdit }) => {
       <img src={`${image_base_url}${product.imageUrl}`} alt={product.name} />
       <h3>{product.name}</h3>
       <p>{product.description}</p>
-      <h4>${product.price}</h4>
+      <h4>${product.price.toFixed(2)}</h4>
       <button onClick={() => onEdit(product)}>Edit</button>
       <button onClick={() => onDelete(product._id)}>Delete</button>
       <button onClick={handlePurchase}>Buy Now</button>
