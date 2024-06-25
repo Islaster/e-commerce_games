@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL,
+  baseURL: "https://e-commerce-games.onrender.com/",
   headers: {
     'Content-Type': 'application/json',
   },

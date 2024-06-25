@@ -30,20 +30,19 @@ export const getProductById = async (req, res) => {
 };
  //create product
 export const createProduct = async (req, res) => {
-  const { name, price, description, imageUrl } = req.body;
+  const { name, price, description } = req.body;
 
   const product = new Product({
     name,
     price,
     description,
-    imageUrl,
   });
 
   try {
     const stripeProduct = await stripe.products.create({
       name,
       description,
-      images: [imageUrl],
+      
     });
 
     const stripePrice = await stripe.prices.create({
@@ -89,7 +88,7 @@ export const createCheckoutSession = async (req, res) => {
 
 // Update a product
 export const updateProduct = async (req, res) => {
-  const { name, price, description, imageUrl } = req.body;
+  const { name, price, description } = req.body;
 
   try {
     const product = await Product.findById(req.params.id);
@@ -97,7 +96,6 @@ export const updateProduct = async (req, res) => {
       product.name = name || product.name;
       product.price = price || product.price;
       product.description = description || product.description;
-      product.imageUrl = imageUrl || product.imageUrl;
 
       const updatedProduct = await product.save();
       res.json(updatedProduct);
