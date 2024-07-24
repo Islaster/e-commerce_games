@@ -44,7 +44,7 @@ app.use(express.json());
 
 // Preflight request handling
 app.options('*', cors({
-  origin: 'https://master--dapper-concha-d7b532.netlify.app',
+  origin: 'https://e-commerce-games-two.vercel.app/',
   optionsSuccessStatus: 200
 }));
 
