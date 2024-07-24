@@ -24,7 +24,8 @@ app.use(helmet({
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://localhsot:3001'
+  'http://localhsot:3001',
+  'https://e-commerce-games-two.vercel.app/'
 ];
 
 const corsOptions = {
