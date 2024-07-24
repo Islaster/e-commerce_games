@@ -8,7 +8,6 @@ import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const ProductCard = ({ product, onDelete, onEdit }) => {
-  console.log("product card image url: ", product)
   const handlePurchase = async () => {
     try {
       const stripe = await stripePromise;
@@ -32,14 +31,16 @@ const ProductCard = ({ product, onDelete, onEdit }) => {
   };
 
   return (
-    <div className={styles.productCard}>
-      <img src={product.imageUrl} alt={product.name} className={styles.productImage} />
-      <h3>{product.name}</h3>
-      <p>{product.description}</p>
-      <h4>${product.price.toFixed(2)}</h4>
-      <button onClick={() => onEdit(product)}>Edit</button>
-      <button onClick={() => onDelete(product._id)}>Delete</button>
-      <button onClick={handlePurchase}>Buy Now</button>
+    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white">
+      <img src={product.imageUrl} alt={product.name} className="w-full object-cover object-center transition-all duration-300 hover:scale-110" />
+      <div className="px-6 py-4">
+      <div className="font-bold text-xl mb-2">{product.name}</div>
+      <p className="text-gray-700 text-base">{product.description}</p>
+        <p className="text-gray-900 font-bold">${product.price.toFixed(2)}</p>
+      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onClick={() => onEdit(product)}>Edit</button>
+      <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2" onClick={() => onDelete(product._id)}>Delete</button>
+      <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2" onClick={handlePurchase}>Buy Now</button>
+      </div>
     </div>
   );
 };
