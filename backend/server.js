@@ -25,7 +25,7 @@ app.use(helmet({
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhsot:3001',
-  'https://e-commerce-games-two.vercel.app/'
+  'https://e-commerce-games-two.vercel.app'
 ];
 
 const corsOptions = {
@@ -45,7 +45,7 @@ app.use(express.json());
 
 // Preflight request handling
 app.options('*', cors({
-  origin: 'https://e-commerce-games-two.vercel.app/',
+  origin: 'https://e-commerce-games-two.vercel.app',
   optionsSuccessStatus: 200
 }));
 
