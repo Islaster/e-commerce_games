@@ -8,6 +8,9 @@ import connectDB from './config/db.js';
 import productRoutes from './routes/productRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
+import aws from "aws-sdk";
+import multer from "multer";
+import multerS3 from "multer-s3"
 
 connectDB();
 
@@ -19,10 +22,23 @@ app.use(helmet({
   crossOriginResourcePolicy: false,
 }));
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhsot:3001'
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
 // Enable CORS for the frontend application
-app.use(cors({
-  origin: 'https://master--dapper-concha-d7b532.netlify.app'
-}));
+app.use(cors(corsOptions));
 // Middleware to parse JSON bodies
 app.use(express.json());
 

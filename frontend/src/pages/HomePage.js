@@ -8,6 +8,7 @@ import {
 } from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import styles from './HomePage.module.css';
+import { postFormData, postJsonData } from '../api/apiServices';
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
@@ -15,6 +16,7 @@ const HomePage = () => {
     name: '',
     price: '',
     description: '',
+    imageUrl: '', 
   });
   const [editMode, setEditMode] = useState(false);
   const [currentProductId, setCurrentProductId] = useState(null);
@@ -33,7 +35,7 @@ const HomePage = () => {
         setLoading(false);
       }
     };
-    setTimeout(fetchProducts, 5000);
+    fetchProducts();
   }, []);
 
   const handleChange = (e) => {
@@ -48,33 +50,40 @@ const HomePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+  
+    const formData = new FormData();
+    formData.append('name', newProduct.name);
+    formData.append('price', newProduct.price);
+    formData.append('description', newProduct.description);
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+  
     try {
-      if (imageFile) {
-        const uploadedImageUrl = await uploadImage(imageFile);
-        newProduct.imageUrl = uploadedImageUrl;
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
       }
-      const productData = {
-        name: newProduct.name,
-        price: parseFloat(newProduct.price),
-        description: newProduct.description,
-        imageUrl: newProduct.imageUrl,
-      };
+      
+      let response;
       if (editMode) {
-        await updateProduct(currentProductId, productData);
+        response = await updateProduct(currentProductId, formData);
         setEditMode(false);
         setCurrentProductId(null);
       } else {
-        await createProduct(productData);
+        response = await createProduct(formData);
       }
+      console.log('Server response:', response);
       setNewProduct({ name: '', price: '', description: '', imageUrl: '' });
       const products = await getProducts();
       setProducts(products);
     } catch (error) {
+      console.error('Failed to save product:', error);
       setError('Failed to save product.');
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleEdit = (product) => {
     setNewProduct(product);
@@ -95,19 +104,14 @@ const HomePage = () => {
     }
   };
 
-  if (loading) return (
-    <div className={styles.loading}>
-      Loading... This may take around 50 seconds. Please be patient. 
-      In the meantime, note that you can create, read, update, and delete (CRUD) products here.
-      To test payments, use Stripe test cards.
-    </div>
-  );
+  if (loading) return <div className={styles.loading}>Loading...</div>;
   if (error) return <div className={styles.error}>{error}</div>;
+  console.log("all products: ", products)
 
   return (
     <div className={styles.homepage}>
       <h1>Products</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} enctype="multipart/form-data">
         <input
           type="text"
           name="name"
@@ -132,7 +136,7 @@ const HomePage = () => {
           placeholder="Product Description"
           required
         />
-        <input type="file" onChange={handleFileChange} />
+        <input type="file" name="image" onChange={handleFileChange} />
         <button type="submit">{editMode ? 'Update' : 'Create'} Product</button>
       </form>
       <div className={styles.productList}>

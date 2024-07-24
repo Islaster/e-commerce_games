@@ -8,13 +8,12 @@ import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const ProductCard = ({ product, onDelete, onEdit }) => {
-  const image_base_url = process.env.REACT_APP_API_BASE_URL;
-
+  console.log("product card image url: ", product)
   const handlePurchase = async () => {
     try {
       const stripe = await stripePromise;
 
-      const response = await axios.post('http://localhost:3001/api/products/create-checkout-session', {
+      const response = await axios.post("https://e-commerce-games.onrender.com/api/products/create-checkout-session", {
         priceId: product.stripePriceId,
       });
 
@@ -34,7 +33,7 @@ const ProductCard = ({ product, onDelete, onEdit }) => {
 
   return (
     <div className={styles.productCard}>
-      <img src={`${image_base_url}${product.imageUrl}`} alt={product.name} />
+      <img src={product.imageUrl} alt={product.name} className={styles.productImage} />
       <h3>{product.name}</h3>
       <p>{product.description}</p>
       <h4>${product.price.toFixed(2)}</h4>
@@ -48,15 +47,14 @@ const ProductCard = ({ product, onDelete, onEdit }) => {
 ProductCard.propTypes = {
   product: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    imageUrl: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
     stripePriceId: PropTypes.string.isRequired, // Ensure this prop is provided
+    imageUrl: PropTypes.string.isRequired, // Ensure this prop is provided
   }).isRequired,
   onDelete: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
 };
 
 export default ProductCard;
-  

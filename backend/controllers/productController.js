@@ -1,8 +1,9 @@
 import Product from '../models/Product.js';
 import Stripe from 'stripe';
 
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-console.log('env variables:', process.env.STRIPE_SECRET_KEY);
+
 
 
 // Get all products
@@ -30,19 +31,21 @@ export const getProductById = async (req, res) => {
 };
  //create product
 export const createProduct = async (req, res) => {
+  console.log("req file: ", req.file);
   const { name, price, description } = req.body;
+  const imageUrl = req.file ? `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${req.file.key}` : null;
 
   const product = new Product({
     name,
     price,
     description,
+    imageUrl 
   });
 
   try {
     const stripeProduct = await stripe.products.create({
       name,
-      description,
-      
+      description
     });
 
     const stripePrice = await stripe.prices.create({
@@ -62,6 +65,7 @@ export const createProduct = async (req, res) => {
   }
 };
 
+
 export const createCheckoutSession = async (req, res) => {
   const { priceId } = req.body;
 
@@ -75,8 +79,8 @@ export const createCheckoutSession = async (req, res) => {
           quantity: 1,
         },
       ],
-      success_url: 'http://localhost:3000/', // Update with your success URL
-      cancel_url: 'http://localhost:3000/cancel', // Update with your cancel URL
+      success_url: 'https://master--dapper-concha-d7b532.netlify.app/', 
+      cancel_url: 'https://master--dapper-concha-d7b532.netlify.app/', 
     });
 
     res.status(200).json({ id: session.id });
@@ -112,14 +116,14 @@ export const deleteProduct = async (req, res) => {
   const productId = req.params.id;
   
   try {
-    console.log(`Attempting to delete product with ID: ${productId}`);
+    (`Attempting to delete product with ID: ${productId}`);
     
     const product = await Product.findByIdAndDelete(productId);
     if (product) {
-      console.log(`Product with ID ${productId} removed successfully.`);
+      (`Product with ID ${productId} removed successfully.`);
       res.json({ message: 'Product removed' });
     } else {
-      console.log(`Product with ID ${productId} not found.`);
+      (`Product with ID ${productId} not found.`);
       res.status(404).json({ message: 'Product not found' });
     }
   } catch (error) {
