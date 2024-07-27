@@ -79,8 +79,8 @@ export const createCheckoutSession = async (req, res) => {
           quantity: 1,
         },
       ],
-      success_url: 'https://master--dapper-concha-d7b532.netlify.app/', 
-      cancel_url: 'https://master--dapper-concha-d7b532.netlify.app/', 
+      success_url: 'https://e-commerce-games-two.vercel.app/', 
+      cancel_url: 'https://e-commerce-games-two.vercel.app/', 
     });
 
     res.status(200).json({ id: session.id });

@@ -8,6 +8,7 @@ import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const ProductCard = ({ product, onDelete, onEdit }) => {
+
   const handlePurchase = async () => {
     try {
       const stripe = await stripePromise;
