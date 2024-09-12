@@ -1,15 +1,16 @@
 import AWS from 'aws-sdk';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client } from '@aws-sdk/client-s3';
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import path from 'path';
 
-console.log('AWS S3 Configuration:', {
+//DEV TEST ACCESS
+/*console.log('AWS S3 Configuration:', {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   region: process.env.AWS_REGION,
   bucket: process.env.S3_BUCKET
-});
+});*/
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,

@@ -8,9 +8,7 @@ import connectDB from './config/db.js';
 import productRoutes from './routes/productRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
-import aws from "aws-sdk";
-import multer from "multer";
-import multerS3 from "multer-s3"
+
 
 connectDB();
 

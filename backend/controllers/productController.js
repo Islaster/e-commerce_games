@@ -1,10 +1,7 @@
-import Product from '../models/Product.js';
-import Stripe from 'stripe';
-
+import Product from "../models/Product.js";
+import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-
 
 // Get all products
 export const getProducts = async (req, res) => {
@@ -23,34 +20,37 @@ export const getProductById = async (req, res) => {
     if (product) {
       res.json(product);
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(404).json({ message: "Product not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
- //create product
+
+//create product
 export const createProduct = async (req, res) => {
   console.log("req file: ", req.file);
   const { name, price, description } = req.body;
-  const imageUrl = req.file ? `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${req.file.key}` : null;
+  const imageUrl = req.file
+    ? `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${req.file.key}`
+    : null;
 
   const product = new Product({
     name,
     price,
     description,
-    imageUrl 
+    imageUrl,
   });
 
   try {
     const stripeProduct = await stripe.products.create({
       name,
-      description
+      description,
     });
 
     const stripePrice = await stripe.prices.create({
       unit_amount: price * 100, // convert to cents
-      currency: 'usd',
+      currency: "usd",
       product: stripeProduct.id,
     });
 
@@ -60,32 +60,31 @@ export const createProduct = async (req, res) => {
     const newProduct = await product.save();
     res.status(201).json(newProduct);
   } catch (error) {
-    console.error('Error creating product:', error);
+    console.error("Error creating product:", error);
     res.status(400).json({ message: error.message });
   }
 };
-
 
 export const createCheckoutSession = async (req, res) => {
   const { priceId } = req.body;
 
   try {
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'payment',
+      payment_method_types: ["card"],
+      mode: "payment",
       line_items: [
         {
           price: priceId,
           quantity: 1,
         },
       ],
-      success_url: 'https://e-commerce-games-two.vercel.app/', 
-      cancel_url: 'https://e-commerce-games-two.vercel.app/', 
+      success_url: "https://e-commerce-games-two.vercel.app/",
+      cancel_url: "https://e-commerce-games-two.vercel.app/",
     });
 
     res.status(200).json({ id: session.id });
   } catch (error) {
-    console.error('Error creating checkout session:', error);
+    console.error("Error creating checkout session:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -104,7 +103,7 @@ export const updateProduct = async (req, res) => {
       const updatedProduct = await product.save();
       res.json(updatedProduct);
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(404).json({ message: "Product not found" });
     }
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -114,20 +113,23 @@ export const updateProduct = async (req, res) => {
 // Delete a product
 export const deleteProduct = async (req, res) => {
   const productId = req.params.id;
-  
+
   try {
-    (`Attempting to delete product with ID: ${productId}`);
-    
+    `Attempting to delete product with ID: ${productId}`;
+
     const product = await Product.findByIdAndDelete(productId);
     if (product) {
-      (`Product with ID ${productId} removed successfully.`);
-      res.json({ message: 'Product removed' });
+      `Product with ID ${productId} removed successfully.`;
+      res.json({ message: "Product removed" });
     } else {
-      (`Product with ID ${productId} not found.`);
-      res.status(404).json({ message: 'Product not found' });
+      `Product with ID ${productId} not found.`;
+      res.status(404).json({ message: "Product not found" });
     }
   } catch (error) {
-    console.error(`Error occurred while deleting product with ID ${productId}:`, error);
+    console.error(
+      `Error occurred while deleting product with ID ${productId}:`,
+      error
+    );
     res.status(500).json({ message: error.message });
   }
 };
